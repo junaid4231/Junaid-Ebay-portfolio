@@ -1,25 +1,41 @@
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { insertContactSubmissionSchema, type InsertContactSubmission } from '@shared/schema';
-import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { useToast } from '@/hooks/use-toast';
-import { Mail, MapPin, Clock } from 'lucide-react';
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  insertContactSubmissionSchema,
+  type InsertContactSubmission,
+} from "@shared/schema";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { Mail, MapPin, Clock } from "lucide-react";
 
 const services = [
-  'Listing Optimization',
-  'Customer Service',
-  'Inventory Management',
-  'Sales Analytics',
-  'Full Store Management',
-  'Other',
+  "Listing Optimization",
+  "Customer Service",
+  "Inventory Management",
+  "Sales Analytics",
+  "Full Store Management",
+  "Other",
 ];
 
 export function Contact() {
@@ -28,30 +44,29 @@ export function Contact() {
   const form = useForm<InsertContactSubmission>({
     resolver: zodResolver(insertContactSubmissionSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      service: '',
-      message: '',
+      name: "",
+      email: "",
+      service: "",
+      message: "",
     },
   });
 
   const mutation = useMutation({
     mutationFn: async (data: InsertContactSubmission) => {
-      const result = await apiRequest('POST', '/api/contact', data);
-      return result;
+      return await apiRequest("POST", "/api/contact", data);
     },
     onSuccess: () => {
       toast({
-        title: 'Message sent successfully!',
+        title: "✅ Message sent successfully!",
         description: "I'll get back to you within 24 hours.",
       });
       form.reset();
     },
     onError: () => {
       toast({
-        title: 'Failed to send message',
-        description: 'Please try again or contact me directly via email.',
-        variant: 'destructive',
+        title: "❌ Failed to send message",
+        description: "Please try again or contact me directly via email.",
+        variant: "destructive",
       });
     },
   });
@@ -74,11 +89,13 @@ export function Contact() {
             Let's Work <span className="text-gradient-primary">Together</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Ready to transform your eBay store? Get in touch and let's discuss your goals
+            Ready to transform your eBay store? Get in touch and let's discuss
+            your goals
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* FORM SECTION */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -89,7 +106,10 @@ export function Contact() {
             <Card className="glass">
               <CardContent className="p-8">
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
                     <FormField
                       control={form.control}
                       name="name"
@@ -100,7 +120,6 @@ export function Contact() {
                             <Input
                               placeholder="John Doe"
                               className="glass"
-                              data-testid="input-name"
                               {...field}
                             />
                           </FormControl>
@@ -118,9 +137,8 @@ export function Contact() {
                           <FormControl>
                             <Input
                               type="email"
-                              placeholder="john@example.com"
+                              placeholder="john@gmail.com"
                               className="glass"
-                              data-testid="input-email"
                               {...field}
                             />
                           </FormControl>
@@ -135,19 +153,18 @@ export function Contact() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Service Interest</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
                             <FormControl>
-                              <SelectTrigger className="glass" data-testid="select-service">
+                              <SelectTrigger className="glass">
                                 <SelectValue placeholder="Select a service" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {services.map((service) => (
-                                <SelectItem
-                                  key={service}
-                                  value={service}
-                                  data-testid={`option-service-${service.toLowerCase().replace(/\s+/g, '-')}`}
-                                >
+                                <SelectItem key={service} value={service}>
                                   {service}
                                 </SelectItem>
                               ))}
@@ -168,7 +185,6 @@ export function Contact() {
                             <Textarea
                               placeholder="Tell me about your eBay store and goals..."
                               className="glass min-h-32 resize-none"
-                              data-testid="textarea-message"
                               {...field}
                             />
                           </FormControl>
@@ -182,7 +198,6 @@ export function Contact() {
                       size="lg"
                       className="w-full glow-primary"
                       disabled={mutation.isPending}
-                      data-testid="button-submit-contact"
                     >
                       {mutation.isPending ? (
                         <span className="flex items-center gap-2">
@@ -190,7 +205,7 @@ export function Contact() {
                           Sending...
                         </span>
                       ) : (
-                        'Send Message'
+                        "Send Message"
                       )}
                     </Button>
                   </form>
@@ -199,6 +214,7 @@ export function Contact() {
             </Card>
           </motion.div>
 
+          {/* SIDEBAR */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -214,7 +230,9 @@ export function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Email</h3>
-                    <p className="text-sm text-muted-foreground">junaid@ebayva.com</p>
+                    <p className="text-sm text-muted-foreground">
+                      junaid.chudhry12@gmail.com
+                    </p>
                   </div>
                 </div>
 
@@ -224,7 +242,9 @@ export function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Location</h3>
-                    <p className="text-sm text-muted-foreground">Available Worldwide</p>
+                    <p className="text-sm text-muted-foreground">
+                      Available Worldwide
+                    </p>
                   </div>
                 </div>
 
@@ -234,7 +254,9 @@ export function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Response Time</h3>
-                    <p className="text-sm text-muted-foreground">Within 24 hours</p>
+                    <p className="text-sm text-muted-foreground">
+                      Within 24 hours
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -244,7 +266,8 @@ export function Contact() {
               <CardContent className="p-8 text-primary-foreground">
                 <h3 className="text-2xl font-bold mb-4">Ready to Scale?</h3>
                 <p className="text-sm opacity-90 mb-6">
-                  Join 50+ successful eBay sellers who trust me to manage and grow their stores.
+                  Join 50+ successful eBay sellers who trust me to manage and
+                  grow their stores.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
